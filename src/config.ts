@@ -3,19 +3,7 @@ import path from "node:path";
 import os from "node:os";
 import { select, input } from "@inquirer/prompts";
 import { PROVIDERS } from "./constants";
-
-export interface Config {
-	provider:
-		| "openai"
-		| "openai-compatible"
-		| "anthropic"
-		| "openrouter"
-		| "groq";
-	maxTokens: number;
-	apiKey: string;
-	model: string;
-	endpoint?: string;
-}
+import type { Config } from "./types";
 
 const CONFIG_FILE = path.join(os.homedir(), ".aicommitrc");
 

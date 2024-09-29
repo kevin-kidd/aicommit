@@ -1,0 +1,34 @@
+# Development files
+src/
+tests/
+.github/
+tsconfig.json
+build.mts
+
+# Configuration files
+.gitignore
+.npmignore
+
+# Editor-specific files
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Bun specific
+bun.lockb
+
+# Keep dist folder
+!dist/
+
+# Keep README.md
+!README.md

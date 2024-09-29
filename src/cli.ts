@@ -1,7 +1,12 @@
 import { Command, Option } from "commander";
 import { version } from "../package.json";
-import { loadConfig, saveConfig } from "./config";
-import { createClient, generateCommitMessages, getDiff } from "./utils";
+import { loadConfig, promptForConfig, saveConfig } from "./config";
+import {
+	createClient,
+	generateCommitMessages,
+	getDiff,
+	getRecentCommits,
+} from "./utils";
 
 const CLI = new Command();
 
@@ -42,14 +47,17 @@ CLI.command("generate")
 				config.endpoint,
 			);
 			const diff = await getDiff();
+			const recentCommits = await getRecentCommits();
 			const commitMessages = await generateCommitMessages(
 				client,
 				config.model,
 				config.maxTokens,
 				amount,
 				diff,
+				recentCommits,
 			);
-			console.log(commitMessages);
+			// Handle the different integrations (lazygit, console, etc...);
+			console.log(commitMessages?.join("\n"));
 		} catch (error) {
 			console.error("An error occurred:", error);
 			process.exit(1);
@@ -83,15 +91,36 @@ CLI.command("config")
 		Number.parseInt,
 		256,
 	)
-	.action(async (options) => {
-		await saveConfig({
-			provider: options.provider,
-			model: options.model,
-			endpoint: options.endpoint,
-			apiKey: options.apiKey,
-			maxTokens: options.tokens,
-		});
+	.action(async (options, command) => {
+		// Call promptForConfig() if none of the options are set
+		if (command.parent.args?.length === 1) {
+			console.log("Welcome to AI Commit! Let's set up your configuration.");
+			const config = await promptForConfig();
+			await saveConfig(config);
+		} else {
+			await saveConfig({
+				provider: options.provider,
+				model: options.model,
+				endpoint: options.endpoint,
+				apiKey: options.apiKey,
+				maxTokens: options.tokens,
+			});
+		}
+
 		console.log("Configuration saved successfully!");
+	});
+
+CLI.command("view-config")
+	.description("View your current configuration.")
+	.action(async () => {
+		const config = await loadConfig();
+		if (!config) {
+			console.error(
+				"Could not find configuration file. Please run `aic config` first.",
+			);
+			process.exit(1);
+		}
+		console.log(config);
 	});
 
 export { CLI };

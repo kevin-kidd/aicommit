@@ -13,7 +13,7 @@ async function main() {
 		console.log("Configuration saved successfully!");
 	}
 
-	CLI.parse();
+	CLI.parseAsync();
 }
 
 main().catch(console.error);

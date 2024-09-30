@@ -1,5 +1,8 @@
 import type { COMMIT_MESSAGE_SCHEMA } from "./constants";
 import type * as v from "valibot";
+import type OpenAI from "openai";
+import type Anthropic from "@anthropic-ai/sdk";
+import type Groq from "groq-sdk";
 
 export type AIClient = OpenAI | Anthropic | Groq;
 

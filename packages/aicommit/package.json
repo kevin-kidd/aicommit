@@ -1,0 +1,53 @@
+{
+	"name": "aicommit",
+	"description": "Generate commit messages with AI using your preferred model and provider.",
+	"author": "Kevin Kidd <harrison.kevin@pm.me>",
+	"version": "1.0",
+	"type": "module",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/kevin-kidd/aicommit"
+	},
+	"bugs": "https://github.com/kevin-kidd/aicommit/issues",
+	"license": "MIT",
+	"bin": {
+		"aic": "out/index.js"
+	},
+	"main": "./out/index.js",
+	"types": "./out/index.d.ts",
+	"files": ["out"],
+	"scripts": {
+		"start": "bun run src/index.ts",
+		"build": "tsc",
+		"dev": "tsc --watch",
+		"compile:vscode": "cd vscode-extension && bun run compile",
+		"release": "bumpp && npm publish",
+		"release:canary": "bumpp --preid canary && npm publish --tag canary",
+		"release:beta": "bumpp --preid beta && npm publish --tag beta",
+		"release:alpha": "bumpp --preid alpha && npm publish --tag alpha",
+		"prepublishOnly": "bun run build",
+		"lint": "biome check src",
+		"format": "biome format src --write",
+		"test": "bun test"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "latest",
+		"@types/bun": "1.1.10",
+		"@types/js-yaml": "^4.0.9",
+		"bumpp": "9.6.1",
+		"tsup": "^8.3.0",
+		"typescript": "^5.6.2",
+		"bun-plugin-dts": "^0.2.3"
+	},
+	"dependencies": {
+		"@anthropic-ai/sdk": "^0.27.3",
+		"@inquirer/prompts": "6.0.1",
+		"bun": "1.1.29",
+		"commander": "^12.1.0",
+		"groq-sdk": "^0.7.0",
+		"js-yaml": "^4.1.0",
+		"openai": "^4.65.0",
+		"simple-git": "^3.27.0",
+		"valibot": "^0.42.1"
+	}
+}

@@ -2,9 +2,6 @@ import { COMMIT_MESSAGE_SCHEMA, PROMPT, SYSTEM_PROMPT } from "./constants";
 import OpenAI from "openai";
 import Anthropic from "@anthropic-ai/sdk";
 import Groq from "groq-sdk";
-import type { ChatCompletionMessageParam as OpenAIMessageParam } from "openai/resources/index.mjs";
-import type { ChatCompletionMessageParam as GroqMessageParam } from "groq-sdk/resources/chat/completions.mjs";
-import type { MessageParam } from "@anthropic-ai/sdk/resources/messages.mjs";
 import { $ } from "bun";
 import simpleGit, { type DefaultLogFields } from "simple-git";
 import * as v from "valibot";
@@ -14,8 +11,8 @@ import type { AIClient, Config } from "./types";
 export function createClient(
 	provider: Config["provider"],
 	apiKey: Config["apiKey"],
-	endpoint: Config["endpoint"],
-) {
+	endpoint?: Config["endpoint"],
+): AIClient {
 	switch (provider) {
 		case "openai":
 			return new OpenAI({ apiKey });
@@ -35,6 +32,7 @@ export function createClient(
 // Generate commit messages given client, amount, and git diff
 export async function generateCommitMessages(
 	client: AIClient,
+	provider: Config["provider"],
 	model: Config["model"],
 	maxTokens: Config["maxTokens"],
 	amount: number,
@@ -45,45 +43,49 @@ export async function generateCommitMessages(
 		.replaceAll("{{diff}}", diff)
 		.replaceAll("{{recent-commits}}", recentCommits);
 	let commitMessages: string | null | undefined;
-	const messages: OpenAIMessageParam[] | MessageParam[] | GroqMessageParam[] = [
+	const messages = [
 		{ role: "system", content: SYSTEM_PROMPT },
 		{ role: "user", content: prompt },
 	];
 	try {
-		switch (client.constructor.name) {
-			case "OpenAI": {
+		switch (provider) {
+			case "openai":
+			case "openai-compatible":
+			case "openrouter": {
 				const openaiClient = client as OpenAI;
 				const response = await openaiClient.chat.completions.create({
 					model,
 					max_tokens: maxTokens,
-					messages: messages as OpenAIMessageParam[],
+					messages:
+						messages as OpenAI.Chat.Completions.ChatCompletionMessageParam[],
 				});
 				commitMessages = response.choices[0].message.content;
 				break;
 			}
-			case "Anthropic": {
+			case "anthropic": {
 				const anthropicClient = client as Anthropic;
 				const response = await anthropicClient.messages.create({
 					model,
 					max_tokens: maxTokens,
-					messages: messages as MessageParam[],
+					messages: messages as Anthropic.MessageParam[],
 				});
 				commitMessages =
 					response.content[0].type === "text" ? response.content[0].text : null;
 				break;
 			}
-			case "Groq": {
+			case "groq": {
 				const groqClient = client as Groq;
 				const response = await groqClient.chat.completions.create({
 					model,
 					max_tokens: maxTokens,
-					messages: messages as GroqMessageParam[],
+					messages:
+						messages as Groq.Chat.Completions.ChatCompletionMessageParam[],
 				});
 				commitMessages = response.choices[0].message.content;
 				break;
 			}
 			default:
-				throw new Error(`Unsupported provider: ${client.constructor.name}`);
+				throw new Error(`Unsupported provider (${provider})`);
 		}
 
 		if (!commitMessages) {
@@ -99,14 +101,17 @@ export async function generateCommitMessages(
 		const validatedJson = v.parse(COMMIT_MESSAGE_SCHEMA, parsedJson);
 		return validatedJson.commitMessages;
 	} catch (error) {
-		console.error("Error generating commit messages:", error);
-		throw error;
+		throw new Error(
+			`Error generating commit messages: ${
+				error instanceof Error ? error.message : String(error)
+			}`,
+		);
 	}
 }
 
 // Get the git diff
 export async function getDiff() {
-	const currentDirectory = (await $`pwd`.text()).trim();
+	const currentDirectory = __dirname;
 	const git = simpleGit(currentDirectory);
 	const diff = await git.diff(["--cached"]);
 	if (diff.trim().length === 0) {

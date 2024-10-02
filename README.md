@@ -5,7 +5,7 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 [![TypeScript](https://img.shields.io/badge/TypeScript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
-AI Commit is a powerful tool that generates Git commit messages using AI, supporting various models and providers. It offers integrations with LazyGit and VS Code, making it easy to incorporate AI-generated commit messages into your workflow.
+AI Commit is a powerful tool that generates Git commit messages using AI, supporting various models and providers. Integrate with LazyGit and VS Code, making it easy to incorporate AI-generated commit messages into your workflow.
 
 ## Features
 

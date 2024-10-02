@@ -53,7 +53,8 @@ aic integrate
 ### Configuration Options
 
 - `--provider`: AI provider (openai, openai-compatible, anthropic, openrouter, groq)
-- `--model`: AI model to use- `--api-key`: API key for the selected provider
+- `--model`: AI model to use
+- `--api-key`: API key for the selected provider
 - `--endpoint`: Endpoint for OpenAI compatible providers
 - `--tokens`: Maximum number of tokens to generate
 

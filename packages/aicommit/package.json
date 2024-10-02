@@ -11,7 +11,7 @@
 	"bugs": "https://github.com/kevin-kidd/aicommit/issues",
 	"license": "MIT",
 	"bin": {
-		"aic": "out/index.js"
+		"aic": "./out/index.js"
 	},
 	"main": "./out/index.js",
 	"types": "./out/index.d.ts",

@@ -3,12 +3,14 @@
 	"private": true,
 	"workspaces": ["packages/aicommit"],
 	"scripts": {
-		"build": "bun run build:aicommit && bun run build:vscode",
+		"build": "bun run build:aicommit",
 		"build:aicommit": "cd packages/aicommit && bun run build",
 		"build:vscode": "cd packages/vscode-extension && bun run compile",
 		"test:all": "bun run test:aicommit && bun run test:vscode",
 		"test:aicommit": "cd packages/aicommit && bun run test",
-		"test:vscode": "cd packages/vscode-extension && bun run test"
+		"test:vscode": "cd packages/vscode-extension && bun run test",
+		"lint": "biome lint --error-on-warnings ./",
+		"format": "biome check --write ./"
 	},
 	"devDependencies": {
 		"typescript": "^5.6.2"

@@ -1,8 +1,8 @@
 {
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "aicommit": ["packages/aicommit/src"]
-    }
-  }
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"aicommit": ["packages/aicommit/src"]
+		}
+	}
 }

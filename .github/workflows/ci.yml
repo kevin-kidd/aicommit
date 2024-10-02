@@ -44,10 +44,10 @@ jobs:
 
     - name: Build
       run: bun run build
-
+      
   prerelease:
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
 
     steps:
@@ -73,6 +73,7 @@ jobs:
         git config user.email github-actions@github.com
 
     - name: Bump version and publish
+      working-directory: packages/aicommit
       run: |
         npm version prerelease --preid=canary -m "Bump version to %s [skip ci]"
         npm publish --tag canary

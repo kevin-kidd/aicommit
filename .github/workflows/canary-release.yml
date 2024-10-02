@@ -50,8 +50,10 @@ jobs:
         run: |
           current_version=$(node -p "require('./package.json').version")
           latest_canary=$(npm view @kkidd/aicommit dist-tags.canary)
-          if [[ $latest_canary == *"$current_version"* ]]; then
-            next_version=$(npx semver $latest_canary -i prerelease)
+          if [[ $latest_canary == *"$current_version-canary."* ]]; then
+            canary_number=$(echo $latest_canary | sed -E 's/.*canary\.([0-9]+)$/\1/')
+            next_canary=$((canary_number + 1))
+            next_version="$current_version-canary.$next_canary"
           else
             next_version="$current_version-canary.0"
           fi

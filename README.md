@@ -64,7 +64,7 @@ aic integrate
 To set up the LazyGit integration:
 
 1. Run `aic integrate`
-2. Choose \"LazyGit\" from the options
+2. Choose "LazyGit" from the options
 3. Follow the prompts to configure your LazyGit config file
 
 ### VS Code (coming soon)
@@ -87,10 +87,10 @@ Example configuration:
 
 ```json
 {
-  \"provider\": \"openai\",
-  \"model\": \"gpt-4\",
-  \"apiKey\": \"your-api-key-here\",
-  \"maxTokens\": 256
+  "provider": "openai",
+  "model": "gpt-4",
+  "apiKey": "your-api-key-here",
+  "maxTokens": 256
 }
 ```
 

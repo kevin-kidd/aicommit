@@ -4,49 +4,75 @@ import path from "node:path";
 import { input } from "@inquirer/prompts";
 import yaml from "js-yaml";
 
-const DEFAULT_LAZYGIT_CONFIG_PATH = path.join(
-	os.homedir(),
-	".config",
-	"lazygit",
-	"config.yml",
-);
+function getDefaultLazyGitConfigPath(): string {
+	switch (process.platform) {
+		case "linux":
+			return path.join(os.homedir(), ".config", "lazygit", "config.yml");
+		case "darwin": // macOS
+			return path.join(
+				os.homedir(),
+				"Library",
+				"Application Support",
+				"lazygit",
+				"config.yml",
+			);
+		case "win32": {
+			// Windows
+			const localAppData =
+				process.env.LOCALAPPDATA || path.join(os.homedir(), "AppData", "Local");
+			const appData =
+				process.env.APPDATA || path.join(os.homedir(), "AppData", "Roaming");
+			const localPath = path.join(localAppData, "lazygit", "config.yml");
+			const roamingPath = path.join(appData, "lazygit", "config.yml");
+			return fs.existsSync(localPath) ? localPath : roamingPath;
+		}
+		default:
+			throw new Error(`Unsupported operating system: ${process.platform}`);
+	}
+}
 
 export async function setupLazyGitIntegration() {
-	let configPath = DEFAULT_LAZYGIT_CONFIG_PATH;
+	let configPath = getDefaultLazyGitConfigPath();
 
-	const confirmPath = await input({
-		message: `Is this your LazyGit config file path? ${configPath}`,
-		required: true,
-		default: "y",
-	});
-
-	if (confirmPath.toLowerCase() !== "y") {
-		configPath = await input({
-			message: "Please enter the correct path to your LazyGit config file:",
-			validate: (input) => fs.existsSync(input) || "File does not exist",
+	if (fs.existsSync(configPath)) {
+		const confirmPath = await input({
+			message: `Is this your LazyGit config file path? ${configPath}`,
+			required: true,
+			default: "y",
 		});
+
+		if (confirmPath.toLowerCase() !== "y") {
+			configPath = await promptForConfigPath();
+		}
+	} else {
+		console.log(`Default LazyGit config file not found at ${configPath}`);
+		configPath = await promptForConfigPath();
 	}
 
 	try {
 		const configContent = await fs.promises.readFile(configPath, "utf-8");
 		// biome-ignore lint/suspicious/noExplicitAny: no point in creating a type for lazygit config file, as it may change in future
-		const config = yaml.load(configContent) as Record<string, any>;
+		let config = yaml.load(configContent) as Record<string, any>;
+		if (!config) {
+			config = {
+				customCommands: [],
+			};
+		}
 
 		config.customCommands = config.customCommands || [];
 		config.customCommands.push({
 			key: "<c-g>", // CTRL + G
+			prompts: [
+				{
+					type: "menuFromCommand",
+					title: "AI Commit",
+					key: "Msg",
+					command: "aic generate",
+				},
+			],
 			command: `git commit -m "{{.Form.Msg}}"`,
 			context: "files",
 			description: "Generate commit message with AI",
-			prompts: {
-				"- type": "menuFromCommand",
-				title: "AI Commit",
-				key: "Msg",
-				command: "aic generate",
-				valueFormat: "{{ .message }}",
-				labelFormat: "{{ .number }}: {{ .message | blue }}",
-				filter: "^(?P<number>d+).s(?P<message>.+)$",
-			},
 		});
 
 		await fs.promises.writeFile(
@@ -58,4 +84,11 @@ export async function setupLazyGitIntegration() {
 	} catch (error) {
 		console.error("Error setting up LazyGit integration:", error);
 	}
+}
+
+async function promptForConfigPath(): Promise<string> {
+	return input({
+		message: "Please enter the correct path to your LazyGit config file:",
+		validate: (input) => fs.existsSync(input) || "File does not exist",
+	});
 }

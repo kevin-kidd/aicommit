@@ -55,6 +55,8 @@ jobs:
           else
             next_version="$current_version-canary.0"
           fi
-          npm publish --tag canary --access public --new-version $next_version
+          echo "Publishing version $next_version"
+          npm version $next_version --no-git-tag-version --allow-same-version
+          npm publish --tag canary --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

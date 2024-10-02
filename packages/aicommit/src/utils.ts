@@ -1,10 +1,10 @@
-import { COMMIT_MESSAGE_SCHEMA, PROMPT, SYSTEM_PROMPT } from "./constants";
-import OpenAI from "openai";
 import Anthropic from "@anthropic-ai/sdk";
-import Groq from "groq-sdk";
 import { $ } from "bun";
+import Groq from "groq-sdk";
+import OpenAI from "openai";
 import simpleGit, { type DefaultLogFields } from "simple-git";
 import * as v from "valibot";
+import { COMMIT_MESSAGE_SCHEMA, PROMPT, SYSTEM_PROMPT } from "./constants";
 import type { AIClient, Config } from "./types";
 
 // Create client based on config AI provider

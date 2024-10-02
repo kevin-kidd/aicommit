@@ -1,14 +1,14 @@
-import { expect, test, mock } from "bun:test";
+import { expect, mock, test } from "bun:test";
+import Anthropic from "@anthropic-ai/sdk";
+import Groq from "groq-sdk";
+import OpenAI from "openai";
+import type { Config } from "../src/types";
 import {
 	createClient,
 	generateCommitMessages,
 	getDiff,
 	getRecentCommits,
 } from "../src/utils";
-import OpenAI from "openai";
-import Anthropic from "@anthropic-ai/sdk";
-import Groq from "groq-sdk";
-import type { Config } from "../src/types";
 
 test("createClient", () => {
 	const openaiClient = createClient("openai", "test-api-key", undefined);

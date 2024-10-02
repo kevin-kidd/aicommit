@@ -1,7 +1,7 @@
 import fs from "node:fs";
-import path from "node:path";
 import os from "node:os";
-import { select, input } from "@inquirer/prompts";
+import path from "node:path";
+import { input, select } from "@inquirer/prompts";
 import { PROVIDERS } from "./constants";
 import type { Config } from "./types";
 

@@ -1,18 +1,18 @@
 #!/usr/bin/env bun
+import { select } from "@inquirer/prompts";
 import { Command, Option } from "commander";
 import { version } from "../package.json";
 import { loadConfig, promptForConfig, saveConfig } from "./config";
+import { PROVIDERS } from "./constants";
+import { setupLazyGitIntegration } from "./integrations/lazygit";
+import { setupVSCodeIntegration } from "./integrations/vscode";
+import type { Config } from "./types";
 import {
 	createClient,
 	generateCommitMessages,
 	getDiff,
 	getRecentCommits,
 } from "./utils";
-import { select } from "@inquirer/prompts";
-import { setupLazyGitIntegration } from "./integrations/lazygit";
-import { setupVSCodeIntegration } from "./integrations/vscode";
-import { PROVIDERS } from "./constants";
-import type { Config } from "./types";
 
 const CLI = new Command();
 

@@ -1,8 +1,8 @@
 import fs from "node:fs";
-import { input } from "@inquirer/prompts";
-import yaml from "js-yaml";
 import os from "node:os";
 import path from "node:path";
+import { input } from "@inquirer/prompts";
+import yaml from "js-yaml";
 
 const DEFAULT_LAZYGIT_CONFIG_PATH = path.join(
 	os.homedir(),
@@ -37,16 +37,15 @@ export async function setupLazyGitIntegration() {
 			command: `git commit -m "{{.Form.Msg}}"`,
 			context: "files",
 			description: "Generate commit message with AI",
-      prompts: {
-        "- type": "menuFromCommand",
-        title: "AI Commit",
-        key: "Msg",
-        command: "aic generate",
-        valueFormat: "{{ .message }}",
-        labelFormat: "{{ .number }}: {{ .message | blue }}",
-        filter: '^(?P<number>\d+)\.\s(?P<message>.+)$'
-      }
-
+			prompts: {
+				"- type": "menuFromCommand",
+				title: "AI Commit",
+				key: "Msg",
+				command: "aic generate",
+				valueFormat: "{{ .message }}",
+				labelFormat: "{{ .number }}: {{ .message | blue }}",
+				filter: "^(?P<number>d+).s(?P<message>.+)$",
+			},
 		});
 
 		await fs.promises.writeFile(

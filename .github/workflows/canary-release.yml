@@ -45,15 +45,16 @@ jobs:
         run: bun run build
         working-directory: packages/aicommit
 
-      - name: Configure Git
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-
-      - name: Bump version and publish
+      - name: Publish canary version
         working-directory: packages/aicommit
         run: |
-          bun bumpp --preid canary --commit "chore: release canary %s [skip ci]" --tag --push
-          npm publish --tag canary --access public
+          current_version=$(node -p "require('./package.json').version")
+          latest_canary=$(npm view @kkidd/aicommit dist-tags.canary)
+          if [[ $latest_canary == *"$current_version"* ]]; then
+            next_version=$(npx semver $latest_canary -i prerelease)
+          else
+            next_version="$current_version-canary.0"
+          fi
+          npm publish --tag canary --access public --new-version $next_version
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

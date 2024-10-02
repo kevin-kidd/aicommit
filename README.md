@@ -52,6 +52,7 @@ aic integrate
 
 ### Configuration Options
 
+- For initial setup or to update all settings, run `aic config` without options
 - `--provider`: AI provider (openai, openai-compatible, anthropic, openrouter, groq)
 - `--model`: AI model to use
 - `--api-key`: API key for the selected provider

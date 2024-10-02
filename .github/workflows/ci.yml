@@ -61,12 +61,6 @@ jobs:
     - name: Install dependencies
       run: bun install
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '18'
-        registry-url: 'https://registry.npmjs.org'
-
     - name: Configure Git
       run: |
         git config user.name github-actions
@@ -75,8 +69,7 @@ jobs:
     - name: Bump version and publish
       working-directory: packages/aicommit
       run: |
-        npm version prerelease --preid=canary -m "Bump version to %s [skip ci]"
-        npm publish --tag canary
+        bun run release:canary
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

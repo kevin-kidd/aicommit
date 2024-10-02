@@ -53,7 +53,7 @@ jobs:
       - name: Bump version and publish
         working-directory: packages/aicommit
         run: |
-          bumpp --preid canary --commit "chore: release canary %s [skip ci]" --tag --push
+          bun bumpp --preid canary --commit "chore: release canary %s [skip ci]" --tag --push
           npm publish --tag canary --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

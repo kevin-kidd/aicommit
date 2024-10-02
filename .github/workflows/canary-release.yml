@@ -8,43 +8,34 @@ on:
     branches: [master]
 
 jobs:
-  check-changes:
-    runs-on: ubuntu-latest
+  check-and-release:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    outputs:
-      aicommit_changed: ${{ steps.filter.outputs.aicommit }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            aicommit:
-              - 'packages/aicommit/**'
-
-  canary-release:
-    needs: check-changes
-    if: ${{ needs.check-changes.outputs.aicommit_changed == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Get changed files
+        id: changed-files
+        run: |
+          echo "files=$(git diff --name-only ${{ github.event.workflow_run.head_sha }}^ ${{ github.event.workflow_run.head_sha }} | grep '^packages/aicommit/' | wc -l)" >> $GITHUB_OUTPUT
 
       - name: Setup Bun
+        if: steps.changed-files.outputs.files != '0'
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
       - name: Setup Node.js
+        if: steps.changed-files.outputs.files != '0'
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Cache dependencies
+        if: steps.changed-files.outputs.files != '0'
         uses: actions/cache@v4
         with:
           path: |
@@ -55,14 +46,17 @@ jobs:
             ${{ runner.os }}-bun-
 
       - name: Install dependencies
+        if: steps.changed-files.outputs.files != '0'
         run: bun install
         working-directory: packages/aicommit
 
       - name: Build
+        if: steps.changed-files.outputs.files != '0'
         run: bun run build
         working-directory: packages/aicommit
 
       - name: Publish canary version
+        if: steps.changed-files.outputs.files != '0'
         working-directory: packages/aicommit
         run: |
           current_version=$(node -p "require('./package.json').version")

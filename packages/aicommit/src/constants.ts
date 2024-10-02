@@ -8,71 +8,80 @@ Ensure you respond with valid JSON.
 `;
 
 export const PROMPT = `
-Please suggest {{amount}} commit messages, given the following diff:
+Please suggest {{amount}} commit messages for the following git diff:
 
 \`\`\`diff
 {{diff}}
 \`\`\`
 
-**Criteria:**
+**Commit Message Format:**
+Follow the Conventional Commits specification:
 
-1. **Format:** Each commit message must follow the 
-  commitizen conventional commits format, which is:
-\`\`\`<type>[optional scope]: <description>
+<type>[optional scope]: <description>
 
 [optional body]
 
-[optional footer]
-\`\`\` 
+[optional footer(s)]
 
+Where <type> is one of:
+- feat: A new feature
+- fix: A bug fix
+- docs: Documentation only changes
+- style: Changes that do not affect the meaning of the code (white-space, formatting, etc)
+- refactor: A code change that neither fixes a bug nor adds a feature
+- perf: A code change that improves performance
+- test: Adding missing tests or correcting existing tests
+- build: Changes that affect the build system or external dependencies
+- ci: Changes to our CI configuration files and scripts
+- chore: Other changes that don't modify src or test files
 
-2. **Relevance:** Avoid mentioning a module name unless it's directly relevant
-to the change.
-3. **Enumeration:** List the commit messages from 1 to {{amount}}.
-4. **Clarity and Conciseness:** Each message should clearly and concisely convey
-the change made.
+**Guidelines:**
+1. Be concise: Aim for 50 characters or less in the description.
+2. Use imperative mood: "Add feature" not "Added feature" or "Adds feature".
+3. Don't capitalize the first letter or end with a period.
+4. If the change is specific to a part of the codebase, include a scope, e.g., "feat(parser):".
+5. For breaking changes, add "BREAKING CHANGE:" in the footer.
+6. If addressing an issue, reference it in the footer: "Closes #123".
 
-**Commit Message Examples:**
+**Examples:**
+- feat(auth): add password strength indicator
+- fix(api): handle null response from user service
+- docs: update README with new build instructions
+- style: format code using prettier
+- refactor(utils): extract date formatting logic
+- perf(queries): optimize database joins for user lookup
+- test(unit): add tests for password reset flow
+- build(deps): upgrade to TypeScript 4.5
+- ci: add GitHub Actions workflow for linting
+- chore: update .gitignore with new build output directory
 
-- fix(app): add password regex pattern
-- test(unit): add new test cases
-- style: remove unused imports
-- refactor(pages): extract common code to \`utils/wait.ts\`
-
-**Recent Commits on Repo for Reference:**
-
+**Recent Commits (for context):**
 \`\`\`
 {{recent-commits}}
 \`\`\`
 
 **Instructions:**
+1. Analyze the diff carefully to understand the changes.
+2. Consider the impact of these changes (e.g., new features, bug fixes, optimizations).
+3. Generate {{amount}} distinct commit messages that accurately describe the changes.
+4. Ensure each message follows the Conventional Commits format.
+5. Provide a clear, concise description that captures the essence of the change.
+6. Use an appropriate type and scope (if applicable) for each message.
+7. If a change is breaking, include "BREAKING CHANGE:" in the footer.
+8. If addressing a specific issue, reference it in the footer.
+9. Avoid mentioning file names unless absolutely necessary for clarity.
+10. Focus on the "why" and "what" of the change, not just the "how".
 
-- Take a moment to understand the changes made in the diff.
+Remember, these commit messages should be helpful for someone reviewing the project's history. Each message should stand on its own and provide value.
 
-- Think about the impact of these changes on the project (e.g., bug fixes, new
-features, performance improvements, code refactoring, documentation updates).
-It's critical to my career you abstract the changes to a higher level and not
-just describe the code changes.
-
-- Generate commit messages that accurately describe these changes, ensuring they
-are helpful to someone reading the project's history.
-
-- Remember, a well-crafted commit message can significantly aid in the maintenance
-and understanding of the project over time.
-
-- If multiple changes are present, make sure you capture them all in each commit
-message.
-
-If there's multiple different kinds of changes present in one commit, you can write
-a commit message that includes multiple types, though this is generally discouraged. For example: "feat: implement new feature"
-
-This approach breaks the conventional commits' standard, but the developer may still have
-a good reason for doing so. In this case create the 5 conventional commit messages
-and 3 more commit messages with multiple types.
-
-Keep in mind you will suggest multiple commit messages. Only 1 will be used.
-
-Write your commit messages below in the format shown in Output Template section above.
+Respond with a JSON object containing an array of commit messages:
+{
+  "commitMessages": [
+    "feat(user): implement password reset functionality",
+    "fix(api): handle edge case in data validation",
+    // ... more messages up to {{amount}}
+  ]
+}
 `;
 
 export const PROVIDERS: Record<Config["provider"], string> = {

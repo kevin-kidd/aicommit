@@ -1,3 +1,4 @@
+#!/usr/bin/env bun
 import { select } from "@inquirer/prompts";
 import { Command, Option } from "commander";
 import { version } from "../package.json";

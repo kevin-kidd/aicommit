@@ -16,6 +16,7 @@ export async function setupLazyGitIntegration() {
 
 	const confirmPath = await input({
 		message: `Is this your LazyGit config file path? ${configPath}`,
+		required: true,
 		default: "y",
 	});
 

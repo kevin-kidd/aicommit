@@ -27,8 +27,8 @@ Thumbs.db
 # Bun specific
 bun.lockb
 
-# Keep dist folder
-!dist/
+# Keep out folder
+!out/
 
 # Keep README.md
 !README.md

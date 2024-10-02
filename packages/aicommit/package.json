@@ -18,12 +18,11 @@
 	"files": ["out"],
 	"scripts": {
 		"start": "bun run src/index.ts",
-		"build": "tsc",
-		"dev": "tsc --watch",
+		"build": "bun build src/index.ts --outdir out",
+		"prepublishOnly": "bun run build",
 		"release": "bun run build && bumpp && npm publish --access public",
 		"release:beta": "bumpp --preid beta && npm publish --tag beta --access public",
 		"release:alpha": "bumpp --preid alpha && npm publish --tag alpha --access public",
-		"prepublishOnly": "bun run build",
 		"lint": "biome check src",
 		"format": "biome format src --write",
 		"test": "bun test"
@@ -33,7 +32,6 @@
 		"@types/bun": "1.1.10",
 		"@types/js-yaml": "^4.0.9",
 		"bumpp": "9.6.1",
-		"tsup": "^8.3.0",
 		"typescript": "^5.6.2",
 		"bun-plugin-dts": "^0.2.3"
 	},

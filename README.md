@@ -38,16 +38,16 @@ The VS Code extension will be available in the marketplace in the next month.
 
 ```bash
 # Generate commit messages
-bunx aic generate [--amount <number>]
+aic generate [--amount <number>]
 
 # Configure AI provider and model
-bunx aic config [options]
+aic config [options]
 
 # View current configuration
-bunx aic view-config
+aic view-config
 
 # Set up integrations
-bunx aic integrate
+aic integrate
 ```
 
 ### Configuration Options
@@ -64,7 +64,7 @@ bunx aic integrate
 
 To set up the LazyGit integration:
 
-1. Run `bunx aic integrate`
+1. Run `aic integrate`
 2. Choose "LazyGit" from the options
 3. Follow the prompts to configure your LazyGit config file
 

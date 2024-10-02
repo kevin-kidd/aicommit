@@ -13,7 +13,7 @@ AI Commit is a powerful tool that generates Git commit messages using AI, suppor
 - 🔄 Support for multiple AI providers (OpenAI, Anthropic, OpenRouter, Groq, and OpenAI-compatible)
 - 🖥️ CLI tool for easy integration into your workflow
 - 📝 VS Code extension for seamless integration within the editor
-- 🔗 LazyGit integration for quick commit message generation
+- 🔗 LazyGit integration for streamlined Git operations
 
 ## Requirements
 

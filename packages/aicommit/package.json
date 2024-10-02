@@ -6,7 +6,7 @@
 	"type": "module",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/kevin-kidd/aicommit"
+		"url": "git+https://github.com/kevin-kidd/aicommit.git"
 	},
 	"bugs": "https://github.com/kevin-kidd/aicommit/issues",
 	"license": "MIT",
@@ -20,11 +20,10 @@
 		"start": "bun run src/index.ts",
 		"build": "tsc",
 		"dev": "tsc --watch",
-		"compile:vscode": "cd vscode-extension && bun run compile",
-		"release": "bumpp && npm publish",
-		"release:canary": "bumpp --preid canary && npm publish --tag canary",
-		"release:beta": "bumpp --preid beta && npm publish --tag beta",
-		"release:alpha": "bumpp --preid alpha && npm publish --tag alpha",
+		"release": "bun run build && bumpp && npm publish --access public",
+		"release:canary": "bun run build && bumpp --preid canary && npm publish --tag canary --access public",
+		"release:beta": "bun run build && bumpp --preid beta && npm publish --tag beta --access public",
+		"release:alpha": "bun run build && bumpp --preid alpha && npm publish --tag alpha --access public",
 		"prepublishOnly": "bun run build",
 		"lint": "biome check src",
 		"format": "biome format src --write",

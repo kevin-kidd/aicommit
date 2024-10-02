@@ -2,7 +2,7 @@
 	"name": "@kkidd/aicommit",
 	"description": "Generate commit messages with AI using your preferred model and provider.",
 	"author": "Kevin Kidd <harrison.kevin@pm.me>",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"type": "module",
 	"repository": {
 		"type": "git",
@@ -21,10 +21,8 @@
 		"build": "bun build src/index.ts --outdir out",
 		"prepublishOnly": "bun run build",
 		"release": "bun run build && bumpp && npm publish --access public",
-		"release:beta": "bumpp --preid beta && npm publish --tag beta --access public",
-		"release:alpha": "bumpp --preid alpha && npm publish --tag alpha --access public",
-		"lint": "biome check src",
-		"format": "biome format src --write",
+		"release:beta": "bun run build && bumpp --preid beta && npm publish --tag beta --access public",
+		"release:alpha": "bun run build && bumpp --preid alpha && npm publish --tag alpha --access public",
 		"test": "bun test"
 	},
 	"devDependencies": {

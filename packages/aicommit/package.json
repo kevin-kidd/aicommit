@@ -14,11 +14,11 @@
 		"aic": "./out/index.js"
 	},
 	"main": "./out/index.js",
-	"files": ["out"],
+	"files": ["out", "README.md"],
 	"scripts": {
 		"start": "bun run src/index.ts",
 		"build": "bun build src/index.ts --outdir out",
-		"prepublishOnly": "bun run build",
+		"prepublishOnly": "cp ../../README.md . && bun run build",
 		"release": "bun run build && bumpp && npm publish --access public",
 		"release:beta": "bun run build && bumpp --preid beta && npm publish --tag beta --access public",
 		"release:alpha": "bun run build && bumpp --preid alpha && npm publish --tag alpha --access public",

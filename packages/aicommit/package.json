@@ -25,9 +25,6 @@
 		"release:alpha": "bun run build && bumpp --preid alpha && npm publish --tag alpha --access public",
 		"test": "bun test"
 	},
-	"engines": {
-		"bun": ">=1.1.29"
-	},
 	"devDependencies": {
 		"@biomejs/biome": "latest",
 		"@types/bun": "1.1.10",

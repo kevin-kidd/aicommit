@@ -2,7 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { $ } from "bun";
 import Groq from "groq-sdk";
 import OpenAI from "openai";
-import simpleGit, { type DefaultLogFields } from "simple-git";
+import simpleGit from "simple-git";
 import * as v from "valibot";
 import { COMMIT_MESSAGE_SCHEMA, PROMPT, SYSTEM_PROMPT } from "./constants";
 import type { AIClient, Config } from "./types";
@@ -37,11 +37,11 @@ export async function generateCommitMessages(
 	maxTokens: Config["maxTokens"],
 	amount: number,
 	diff: string,
-	recentCommits: string,
 ): Promise<string[]> {
-	const prompt = PROMPT.replaceAll("{{amount}}", amount.toString())
-		.replaceAll("{{diff}}", diff)
-		.replaceAll("{{recent-commits}}", recentCommits);
+	const prompt = PROMPT.replaceAll("{{amount}}", amount.toString()).replaceAll(
+		"{{diff}}",
+		diff,
+	);
 	let commitMessages: string | null | undefined;
 	const messages = [
 		{ role: "system", content: SYSTEM_PROMPT },
@@ -121,14 +121,14 @@ export async function getDiff() {
 }
 
 // Get recent commit messages
-export async function getRecentCommits() {
-	const currentDirectory = (await $`pwd`.text()).trim();
-	const git = simpleGit(currentDirectory);
-	const recentCommits = await git.log({
-		format: "%h %s",
-		maxCount: 10,
-	});
-	return recentCommits.all
-		.map((commit) => (commit as unknown as DefaultLogFields).message)
-		.join("\n");
-}
+// export async function getRecentCommits() {
+// 	const currentDirectory = (await $`pwd`.text()).trim();
+// 	const git = simpleGit(currentDirectory);
+// 	const recentCommits = await git.log({
+// 		format: "%h %s",
+// 		maxCount: 10,
+// 	});
+// 	return recentCommits.all
+// 		.map((commit) => (commit as unknown as DefaultLogFields).message)
+// 		.join("\n");
+// }

@@ -47,11 +47,6 @@ Where <type> is one of:
 3. For breaking changes, add "BREAKING CHANGE:" in the footer.
 4. If addressing an issue, reference it in the footer: "Closes #123".
 
-**Recent Commits (for context):**
-\`\`\`
-{{recent-commits}}
-\`\`\`
-
 **Key Points:**
 1. Analyze the diff carefully and focus ONLY on the changes present.
 2. Choose the most appropriate type(s) that accurately represent the changes.

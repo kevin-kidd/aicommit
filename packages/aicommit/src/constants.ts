@@ -8,7 +8,7 @@ Ensure you respond with valid JSON.
 `;
 
 export const PROMPT = `
-Please suggest {{amount}} commit messages for the following git diff:
+Please suggest {{amount}} commit message(s) for the following git diff:
 
 \`\`\`diff
 {{diff}}
@@ -23,6 +23,12 @@ Follow the Conventional Commits specification:
 
 [optional footer(s)]
 
+**Important Instructions:**
+1. Focus on selecting ONE or TWO most appropriate <type>s from the list below that best represent the changes in the diff.
+2. Ensure the commit message(s) directly relate to the specific changes shown in the diff.
+3. Include a scope if it's clear from the diff which part of the codebase is affected.
+4. Provide a concise description (aim for 50 characters or less) that accurately reflects the changes.
+
 Where <type> is one of:
 - feat: A new feature
 - fix: A bug fix
@@ -36,49 +42,30 @@ Where <type> is one of:
 - chore: Other changes that don't modify src or test files
 
 **Guidelines:**
-1. Be concise: Aim for 50 characters or less in the description.
-2. Use imperative mood: "Add feature" not "Added feature" or "Adds feature".
-3. Don't capitalize the first letter or end with a period.
-4. If the change is specific to a part of the codebase, include a scope, e.g., "feat(parser):".
-5. For breaking changes, add "BREAKING CHANGE:" in the footer.
-6. If addressing an issue, reference it in the footer: "Closes #123".
-
-**Examples:**
-- feat(auth): add password strength indicator
-- fix(api): handle null response from user service
-- docs: update README with new build instructions
-- style: format code using prettier
-- refactor(utils): extract date formatting logic
-- perf(queries): optimize database joins for user lookup
-- test(unit): add tests for password reset flow
-- build(deps): upgrade to TypeScript 4.5
-- ci: add GitHub Actions workflow for linting
-- chore: update .gitignore with new build output directory
+1. Use imperative mood: "Add feature" not "Added feature" or "Adds feature".
+2. Don't capitalize the first letter or end with a period.
+3. For breaking changes, add "BREAKING CHANGE:" in the footer.
+4. If addressing an issue, reference it in the footer: "Closes #123".
 
 **Recent Commits (for context):**
 \`\`\`
 {{recent-commits}}
 \`\`\`
 
-**Instructions:**
-1. Analyze the diff carefully to understand the changes.
-2. Consider the impact of these changes (e.g., new features, bug fixes, optimizations).
-3. Generate {{amount}} distinct commit messages that accurately describe the changes.
-4. Ensure each message follows the Conventional Commits format.
-5. Provide a clear, concise description that captures the essence of the change.
-6. Use an appropriate type and scope (if applicable) for each message.
-7. If a change is breaking, include "BREAKING CHANGE:" in the footer.
-8. If addressing a specific issue, reference it in the footer.
-9. Avoid mentioning file names unless absolutely necessary for clarity.
-10. Focus on the "why" and "what" of the change, not just the "how".
+**Key Points:**
+1. Analyze the diff carefully and focus ONLY on the changes present.
+2. Choose the most appropriate type(s) that accurately represent the changes.
+3. Include a scope if it's clear which part of the codebase is affected.
+4. Ensure the description directly relates to the changes in the diff.
+5. Avoid suggesting commits for changes not present in the diff.
+6. If only one type is applicable, suggest variations of that type with different descriptions.
 
-Remember, these commit messages should be helpful for someone reviewing the project's history. Each message should stand on its own and provide value.
+Remember, these commit messages should be helpful for someone reviewing the project's history and should accurately represent the changes in the diff.
 
 Respond with a JSON object containing an array of commit messages:
 {
   "commitMessages": [
-    "feat(user): implement password reset functionality",
-    "fix(api): handle edge case in data validation",
+    "<type>[(scope)]: <description>",
     // ... more messages up to {{amount}}
   ]
 }

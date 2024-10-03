@@ -111,7 +111,7 @@ export async function generateCommitMessages(
 
 // Get the git diff
 export async function getDiff() {
-	const currentDirectory = __dirname;
+	const currentDirectory = (await $`pwd`.text()).trim();
 	const git = simpleGit(currentDirectory);
 	const diff = await git.diff(["--cached"]);
 	if (diff.trim().length === 0) {

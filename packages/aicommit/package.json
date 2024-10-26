@@ -2,7 +2,7 @@
 	"name": "@kkidd/aicommit",
 	"description": "Generate commit messages with AI using your preferred model and provider.",
 	"author": "Kevin Kidd <harrison.kevin@pm.me>",
-	"version": "1.0.6",
+	"version": "1.0.7",
 	"type": "module",
 	"repository": {
 		"type": "git",

@@ -2,9 +2,11 @@
 
 All notable changes to the "AI Commit" extension will be documented in this file.
 
-## [0.0.1] - 2024-03-26
+## [0.0.2] - 2024-10-26
 
-### Added
+- Added icon and general info for the extension
+
+## [0.0.1] - 2024-10-25
 
 - Initial release of AI Commit VS Code extension
 - Support for generating commit messages using AI

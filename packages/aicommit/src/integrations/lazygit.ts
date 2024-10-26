@@ -31,7 +31,7 @@ function getDefaultLazyGitConfigPath(): string {
 	}
 }
 
-export async function setupLazyGitIntegration() {
+export async function setupLazyGitIntegration(): Promise<void> {
 	let configPath = getDefaultLazyGitConfigPath();
 
 	if (fs.existsSync(configPath)) {

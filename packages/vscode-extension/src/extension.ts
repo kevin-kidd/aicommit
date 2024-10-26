@@ -50,7 +50,11 @@ export async function activate(context: vscode.ExtensionContext) {
 					if (!selectedProviderKey) {
 						throw new Error("The selected provider is not supported.");
 					}
-					config.update("provider", selectedProviderKey);
+					config.update(
+						"provider",
+						selectedProviderKey,
+						vscode.ConfigurationTarget.Global,
+					);
 					provider = selectedProviderKey;
 					providerName = selectedProvider;
 				}
@@ -65,7 +69,11 @@ export async function activate(context: vscode.ExtensionContext) {
 						);
 					}
 					endpoint = selectedEndpoint;
-					config.update("endpoint", selectedEndpoint);
+					config.update(
+						"endpoint",
+						selectedEndpoint,
+						vscode.ConfigurationTarget.Global,
+					);
 				}
 
 				// Ask for API key if not set
@@ -90,7 +98,11 @@ export async function activate(context: vscode.ExtensionContext) {
 						throw new Error("Model is required.");
 					}
 					model = selectedModel;
-					config.update("model", selectedModel);
+					config.update(
+						"model",
+						selectedModel,
+						vscode.ConfigurationTarget.Global,
+					);
 				}
 
 				if (!provider) {
@@ -127,6 +139,7 @@ export async function activate(context: vscode.ExtensionContext) {
 					async () => {
 						// Get the staged changes
 						const diff = await repo.diff();
+						console.log("diff123:", diff);
 						const client = createClient(provider, apiKey, endpoint);
 
 						// Generate commit messages

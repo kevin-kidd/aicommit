@@ -74,6 +74,14 @@ export const PROVIDERS: Record<Config["provider"], string> = {
 	"openai-compatible": "Other (OpenAI compatible)",
 };
 
-export const COMMIT_MESSAGE_SCHEMA = v.object({
+export const COMMIT_MESSAGE_SCHEMA: v.ObjectSchema<
+	{
+		readonly commitMessages: v.ArraySchema<
+			v.StringSchema<undefined>,
+			undefined
+		>;
+	},
+	undefined
+> = v.object({
 	commitMessages: v.array(v.string()),
 });

@@ -1,7 +1,7 @@
 {
 	"name": "aicommit-monorepo",
 	"private": true,
-	"workspaces": ["packages/aicommit"],
+	"workspaces": ["packages/aicommit", "packages/vscode-extension"],
 	"scripts": {
 		"build": "bun run build:aicommit",
 		"build:aicommit": "cd packages/aicommit && bun run build",

@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
-			"aicommit": ["packages/aicommit/src"]
+			"@kkidd/aicommit": ["packages/aicommit/src"]
 		}
 	}
 }

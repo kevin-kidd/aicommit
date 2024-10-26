@@ -30,7 +30,7 @@ bun add -g @kkidd/aicommit
 
 ### VS Code Extension
 
-The VS Code extension will be available in the marketplace in the next month.
+The VS Code extension is available in the marketplace: [AI Commit - Generate Commit Messages](https://marketplace.visualstudio.com/items?itemName=kevin-kidd.aicommit-vscode)
 
 ## Usage
 
@@ -69,7 +69,7 @@ To set up the LazyGit integration:
 2. Choose "LazyGit" from the options
 3. Follow the prompts to configure your LazyGit config file
 
-### VS Code (coming soon)
+### VS Code
 
 To set up the VS Code integration:
 
@@ -101,7 +101,7 @@ Example configuration:
 - [x] CLI tool for generating commit messages
 - [x] Support for multiple AI providers
 - [x] LazyGit integration
-- [ ] VS Code Extension
+- [x] VS Code Extension
 - [ ] Custom prompt template
 - [ ] Support for custom non-OpenAI compatible providers
 - [ ] Localization support for multiple languages

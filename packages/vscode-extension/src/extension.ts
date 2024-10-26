@@ -24,7 +24,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		async () => {
 			try {
 				const secrets: vscode.SecretStorage = context.secrets;
-				const config = vscode.workspace.getConfiguration("ai-commit");
+				const config = vscode.workspace.getConfiguration("aicommit");
 				const amount = config.get<number>("amount");
 				let model = config.get<string>("model");
 				let provider = config.get<Config["provider"]>("provider");

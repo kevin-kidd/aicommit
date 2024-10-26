@@ -120,6 +120,6 @@
 		"vscode-test": "^1.5.2"
 	},
 	"dependencies": {
-		"@kkidd/aicommit": "latest"
+		"@kkidd/aicommit": "^1.0.8"
 	}
 }

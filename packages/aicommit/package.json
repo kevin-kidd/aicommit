@@ -17,7 +17,7 @@
 	"files": ["out", "README.md"],
 	"scripts": {
 		"start": "bun run src/index.ts",
-		"build": "bun build src/index.ts --outdir out && tsc  --emitDeclarationOnly --isolatedDeclarations",
+		"build": "bun build src/index.ts --outdir out --target node && tsc  --emitDeclarationOnly --isolatedDeclarations",
 		"prepublishOnly": "cp ../../README.md . && bun run build",
 		"release": "bun run build && bumpp && npm publish --access public",
 		"release:beta": "bun run build && bumpp --preid beta && npm publish --tag beta --access public",

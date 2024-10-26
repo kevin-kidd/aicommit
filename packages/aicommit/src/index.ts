@@ -9,7 +9,7 @@ import { setupVSCodeIntegration } from "./integrations/vscode";
 import type { Config } from "./types";
 import { createClient, generateCommitMessages, getDiff } from "./utils";
 
-const CLI = new Command();
+const CLI: Command = new Command();
 
 CLI.name("AI Commit")
 	.description(

@@ -3,7 +3,7 @@ import { promisify } from "node:util";
 
 const execAsync = promisify(exec);
 
-export async function setupVSCodeIntegration() {
+export async function setupVSCodeIntegration(): Promise<void> {
 	const extensionId = "my-publisher.aicommit-extension"; // TODO: add publisher name once published
 	const extensionUrl = `vscode:extension/${extensionId}`;
 

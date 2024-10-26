@@ -11,7 +11,7 @@
 		"declarationMap": true,
 		"resolveJsonModule": true,
 		"rootDir": "src",
-		"composite": true
+		"composite": true,
 	},
 	"include": ["src"],
 	"exclude": ["node_modules", "dist"]

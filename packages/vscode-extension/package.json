@@ -1,0 +1,121 @@
+{
+	"name": "aicommit-vscode",
+	"displayName": "AI Commit - Generate Commit Messages",
+	"publisher": "kevin-kidd",
+	"description": "Generate commit messages with AI using your preferred model and provider.",
+	"repository": "https://github.com/kevin-kidd/aicommit",
+	"version": "0.0.1",
+	"engines": {
+		"vscode": "^1.93.0"
+	},
+	"categories": ["Other"],
+	"main": "./dist/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "aicommit.generateCommitMessage",
+				"title": "AI Commit: Generate Commit Messages",
+				"icon": "$(lightbulb)"
+			},
+			{
+				"command": "aicommit.updateApiKey",
+				"title": "AI Commit: Change API Key"
+			},
+			{
+				"command": "aicommit.testApiKey",
+				"title": "AI Commit: Test API Key"
+			}
+		],
+		"menus": {
+			"scm/title": [
+				{
+					"when": "scmProvider == git",
+					"command": "aicommit.generateCommitMessage",
+					"group": "navigation"
+				}
+			]
+		},
+		"activationEvents": [
+			"onCommand:aicommit.generateCommitMessage",
+			"onCommand:aicommit.updateApiKey",
+			"onCommand:aicommit.testApiKey"
+		],
+		"configuration": {
+			"title": "AI Commit",
+			"properties": {
+				"aicommit.provider": {
+					"type": "string",
+					"enum": [
+						"openai",
+						"anthropic",
+						"openrouter",
+						"groq",
+						"openai-compatible"
+					],
+					"enumItemLabels": [
+						"OpenAI",
+						"Anthropic",
+						"OpenRouter",
+						"Groq",
+						"OpenAI Compatible"
+					],
+					"description": "AI provider to use for generating commit messages"
+				},
+				"aicommit.model": {
+					"type": "string",
+					"description": "Model to use for generating commit messages"
+				},
+				"aicommit.maxTokens": {
+					"type": "number",
+					"default": 256,
+					"minimum": 128,
+					"maximum": 2048,
+					"description": "Maximum number of tokens to generate"
+				},
+				"aicommit.endpoint": {
+					"type": "string",
+					"default": "",
+					"description": "Endpoint for OpenAI compatible providers"
+				},
+				"aicommit.amount": {
+					"type": "number",
+					"default": 5,
+					"description": "Number of commit messages to generate"
+				}
+			}
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run package",
+		"compile": "node esbuild.js",
+		"watch": "node esbuild.js --watch",
+		"package": "bun run check-types && bun run lint && node esbuild.js --production",
+		"compile-tests": "tsc -p . --outDir out",
+		"check-types": "tsc --noEmit",
+		"watch-tests": "tsc -p . -w --outDir out",
+		"pretest": "npm run compile-tests && npm run compile && npm run lint",
+		"lint": "biome check src",
+		"test": "vscode-test"
+	},
+	"extensionDependencies": ["vscode.git"],
+	"devDependencies": {
+		"@types/mocha": "^10.0.8",
+		"@typescript-eslint/eslint-plugin": "^8.7.0",
+		"@typescript-eslint/parser": "^8.7.0",
+		"eslint": "^9.11.1",
+		"npm-run-all": "^4.1.5",
+		"@vscode/test-cli": "^0.0.10",
+		"@vscode/test-electron": "^2.4.1",
+		"@biomejs/biome": "latest",
+		"@types/glob": "^7.1.3",
+		"@types/node": "^14.14.37",
+		"@types/vscode": "^1.60.0",
+		"esbuild": "^0.24.0",
+		"glob": "^7.1.6",
+		"typescript": "^5.6.2",
+		"vscode-test": "^1.5.2"
+	},
+	"dependencies": {
+		"@kkidd/aicommit": "1.0.7"
+	}
+}

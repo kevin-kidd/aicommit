@@ -1,5 +1,4 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { $ } from "bun";
 import Groq from "groq-sdk";
 import OpenAI from "openai";
 import simpleGit from "simple-git";
@@ -110,8 +109,8 @@ export async function generateCommitMessages(
 }
 
 // Get the git diff
-export async function getDiff() {
-	const currentDirectory = (await $`pwd`.text()).trim();
+export async function getDiff(): Promise<string> {
+	const currentDirectory = process.cwd();
 	const git = simpleGit(currentDirectory);
 	const diff = await git.diff(["--cached"]);
 	if (diff.trim().length === 0) {

@@ -57,12 +57,22 @@ function validateConfig(config: Config): Config {
 		config.endpoint = undefined;
 	}
 
+	if (
+		typeof config.integration === "string" &&
+		!["lazygit", "vscode"].includes(config.integration)
+	) {
+		throw new Error(
+			"Invalid integration: must be either 'lazygit' or 'vscode'",
+		);
+	}
+
 	return {
 		provider: config.provider,
 		apiKey: config.apiKey,
 		model: config.model,
 		endpoint: config.endpoint,
 		maxTokens: config.maxTokens,
+		integration: config.integration,
 	};
 }
 

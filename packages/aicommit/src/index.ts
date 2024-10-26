@@ -8,6 +8,8 @@ import { setupLazyGitIntegration } from "./integrations/lazygit";
 import { setupVSCodeIntegration } from "./integrations/vscode";
 import type { Config } from "./types";
 import { createClient, generateCommitMessages, getDiff } from "./utils";
+import { exec } from "node:child_process";
+import { confirm } from "@inquirer/prompts";
 
 const CLI: Command = new Command();
 
@@ -69,8 +71,31 @@ CLI.command("generate")
 				diff,
 			);
 			if (commitMessages) {
-				// TODO: Handle the different integrations (lazygit, console, etc...)
-				console.log(commitMessages.join("\n"));
+				// Log to console if LazyGit or VS Code is the chosen integration
+				if (
+					config.integration === "lazygit" ||
+					config.integration === "vscode"
+				) {
+					console.log(commitMessages.join("\n"));
+				} else {
+					// Allow user to select from the commit messages
+					const selectedCommitMessage = await select({
+						message: "Select a commit message:",
+						choices: commitMessages.map((message) => ({ value: message })),
+					});
+					// Confirm the user wants to commit with the selected message
+					const confirmation = await confirm({
+						message: `Are you sure you want to commit with the message: "${selectedCommitMessage}"?`,
+					});
+					if (confirmation) {
+						// Git commit with the selected message
+						exec(`git commit -m "${selectedCommitMessage}"`, (error) => {
+							if (error) {
+								console.error(`Error committing: ${error}`);
+							}
+						});
+					}
+				}
 			} else {
 				throw new Error("No commit messages returned from API.");
 			}
@@ -90,6 +115,12 @@ CLI.command("config")
 			"openrouter",
 			"groq",
 		]),
+	)
+	.addOption(
+		new Option(
+			"-i, --integration <integration>",
+			"The integration to use",
+		).choices(["lazygit", "vscode"]),
 	)
 	.option(
 		"-m, --model <model>",
@@ -121,6 +152,7 @@ CLI.command("config")
 					endpoint: options.endpoint,
 					apiKey: options.apiKey,
 					maxTokens: options.tokens,
+					integration: options.integration,
 				});
 			}
 
@@ -158,9 +190,11 @@ CLI.command("integrate")
 		switch (integration) {
 			case "lazygit":
 				await setupLazyGitIntegration();
+				await saveConfig({ integration: "lazygit" });
 				break;
 			case "vscode":
 				await setupVSCodeIntegration();
+				await saveConfig({ integration: "vscode" });
 				break;
 			default:
 				console.error("Invalid integration selected");

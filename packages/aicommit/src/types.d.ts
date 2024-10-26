@@ -19,4 +19,5 @@ export interface Config {
 	apiKey: string;
 	model: string;
 	endpoint?: string;
+	integration?: "lazygit" | "vscode";
 }

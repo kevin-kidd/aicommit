@@ -4,11 +4,15 @@
 	"publisher": "kevin-kidd",
 	"description": "Generate commit messages with AI using your preferred model and provider.",
 	"repository": "https://github.com/kevin-kidd/aicommit",
+
 	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.93.0"
 	},
-	"categories": ["Other"],
+	"categories": ["Other", "AI"],
+	"pricing": "Free",
+	"keywords": ["ai", "commit", "message", "generator", "openai"],
+	"icon": "./icon.jpg",
 	"main": "./dist/extension.js",
 	"contributes": {
 		"commands": [

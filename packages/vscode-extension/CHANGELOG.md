@@ -2,6 +2,10 @@
 
 All notable changes to the "AI Commit" extension will be documented in this file.
 
+## [0.0.5] - 2024-11-01
+
+- Fixed bug where commit messages were not being generated for staged changes
+
 ## [0.0.2] - 2024-10-26
 
 - Added icon and general info for the extension

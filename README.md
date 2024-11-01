@@ -58,6 +58,7 @@ aic integrate
 - `--api-key`: API key for the selected provider
 - `--endpoint`: Endpoint for OpenAI compatible providers
 - `--tokens`: Maximum number of tokens to generate
+- `--integration`: Integration to use (lazygit / vscode)
 
 ## Integrations
 
@@ -80,6 +81,7 @@ To set up the VS Code integration:
    - Model
    - Max tokens
    - Number of commit messages to generate
+   - Endpoint (for other OpenAI compatible provider)
 
 ## Configuration
 
@@ -92,7 +94,9 @@ Example configuration:
   "provider": "openai",
   "model": "gpt-4",
   "apiKey": "your-api-key-here",
-  "maxTokens": 256
+  "maxTokens": 256,
+  "integration": "lazygit",
+  "endpoint": "https://example.com/v1/"
 }
 ```
 

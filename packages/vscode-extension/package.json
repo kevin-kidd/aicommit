@@ -5,7 +5,7 @@
 	"description": "Generate commit messages with AI using your preferred model and provider.",
 	"repository": "https://github.com/kevin-kidd/aicommit",
 
-	"version": "0.0.3",
+	"version": "0.0.5",
 	"engines": {
 		"vscode": "^1.93.0"
 	},

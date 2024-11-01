@@ -138,7 +138,7 @@ export async function activate(context: vscode.ExtensionContext) {
 					},
 					async () => {
 						// Get the staged changes
-						const diff = await repo.diff();
+						const diff = await repo.diff(true);
 						console.log("diff123:", diff);
 						const client = createClient(provider, apiKey, endpoint);
 

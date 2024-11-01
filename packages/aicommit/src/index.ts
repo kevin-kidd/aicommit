@@ -120,7 +120,7 @@ CLI.command("config")
 		new Option(
 			"-i, --integration <integration>",
 			"The integration to use",
-		).choices(["lazygit", "vscode"]),
+		).choices(["lazygit", "vscode", "none"]),
 	)
 	.option(
 		"-m, --model <model>",
@@ -182,6 +182,7 @@ CLI.command("integrate")
 		const integration = await select({
 			message: "Choose an integration to set up:",
 			choices: [
+				{ value: "none", name: "None (default)" },
 				{ value: "lazygit", name: "LazyGit" },
 				{ value: "vscode", name: "VS Code" },
 			],
@@ -195,6 +196,9 @@ CLI.command("integrate")
 			case "vscode":
 				await setupVSCodeIntegration();
 				await saveConfig({ integration: "vscode" });
+				break;
+			case "none":
+				await saveConfig({ integration: "none" });
 				break;
 			default:
 				console.error("Invalid integration selected");

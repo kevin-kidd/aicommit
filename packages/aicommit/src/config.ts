@@ -59,7 +59,7 @@ function validateConfig(config: Config): Config {
 
 	if (
 		typeof config.integration === "string" &&
-		!["lazygit", "vscode"].includes(config.integration)
+		!["lazygit", "vscode", "none"].includes(config.integration)
 	) {
 		throw new Error(
 			"Invalid integration: must be either 'lazygit' or 'vscode'",

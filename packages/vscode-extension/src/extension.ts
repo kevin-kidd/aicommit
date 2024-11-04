@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import type { GitExtension } from "./git";
 const {
 	PROVIDERS,
 	createClient,
@@ -19,6 +20,7 @@ interface Config {
 }
 
 export async function activate(context: vscode.ExtensionContext) {
+	const outputChannel = vscode.window.createOutputChannel("AI Commit");
 	const generateCommitMessageCommand = vscode.commands.registerCommand(
 		"aicommit.generateCommitMessage",
 		async () => {
@@ -118,14 +120,23 @@ export async function activate(context: vscode.ExtensionContext) {
 				}
 				// Get the git extension
 				const gitExtension =
-					vscode.extensions.getExtension("vscode.git")?.exports;
+					vscode.extensions.getExtension<GitExtension>("vscode.git")?.exports;
+
+				if (!gitExtension) {
+					throw new Error("Git extension is not installed");
+				}
+
 				const git = gitExtension.getAPI(1);
+				if (!git) {
+					throw new Error("Failed to get Git API");
+				}
 
 				// Get the current repository
 				const repo = git.repositories[0];
-
 				if (!repo) {
-					throw new Error("No Git repository found.");
+					throw new Error(
+						"No Git repository found. Please open a folder with a Git repository.",
+					);
 				}
 
 				let messages: string[] = [];
@@ -138,8 +149,22 @@ export async function activate(context: vscode.ExtensionContext) {
 					},
 					async () => {
 						// Get the staged changes
-						const diff = await repo.diff(true);
-						console.log("diff123:", diff);
+						let diff: unknown;
+						try {
+							// First check if there are any staged changes
+							diff = (await repo.diff(true)).trim();
+							if (!diff) {
+								throw new Error("No staged changes found.");
+							}
+							outputChannel.appendLine(`Diff: ${diff}`);
+						} catch (error) {
+							throw new Error(
+								error instanceof Error
+									? error.message
+									: "Failed to get staged changes.",
+							);
+						}
+
 						const client = createClient(provider, apiKey, endpoint);
 
 						// Generate commit messages
@@ -157,6 +182,13 @@ export async function activate(context: vscode.ExtensionContext) {
 						});
 					},
 				);
+
+				if (messages.length === 0) {
+					throw new Error(
+						"The AI didn't generate any commit messages. Try again.",
+					);
+				}
+
 				// Show quick pick to select a commit message
 				const selected = await vscode.window.showQuickPick(messages, {
 					placeHolder: "Select a commit message",

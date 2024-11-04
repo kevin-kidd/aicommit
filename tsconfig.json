@@ -2,7 +2,8 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
-			"@kkidd/aicommit": ["packages/aicommit/src"]
+			"@kkidd/aicommit": ["packages/aicommit/src"],
+			"@kkidd/vscode-extension": ["packages/vscode-extension/src"]
 		}
 	}
 }

@@ -19,6 +19,70 @@ interface Config {
 	endpoint?: string;
 }
 
+async function selectProvider(
+	config: vscode.WorkspaceConfiguration,
+): Promise<{ provider: Config["provider"]; providerName: string }> {
+	let provider = config.get<Config["provider"]>("provider");
+	let providerName = PROVIDERS[provider as keyof typeof PROVIDERS];
+
+	if (!provider) {
+		const selectedProvider = (await vscode.window.showQuickPick(
+			Object.values(PROVIDERS),
+			{
+				placeHolder: "Select a provider",
+			},
+		)) as Config["provider"];
+
+		if (!selectedProvider) {
+			throw new Error("Provider is required.");
+		}
+
+		const selectedProviderKey = Object.entries(PROVIDERS).find(
+			([_, value]) => value === selectedProvider,
+		)?.[0] as Config["provider"] | undefined;
+
+		if (!selectedProviderKey) {
+			throw new Error("The selected provider is not supported.");
+		}
+
+		await config.update(
+			"provider",
+			selectedProviderKey,
+			vscode.ConfigurationTarget.Global,
+		);
+		provider = selectedProviderKey;
+		providerName = selectedProvider;
+	}
+
+	return { provider, providerName };
+}
+
+async function selectModel(
+	config: vscode.WorkspaceConfiguration,
+): Promise<string> {
+	let model = config.get<string>("model");
+
+	if (!model) {
+		const selectedModel = await vscode.window.showInputBox({
+			title: "Enter the model to use",
+			placeHolder: "e.g. gpt-4, claude-3-5-sonnet, etc.",
+		});
+
+		if (!selectedModel) {
+			throw new Error("Model is required.");
+		}
+
+		await config.update(
+			"model",
+			selectedModel,
+			vscode.ConfigurationTarget.Global,
+		);
+		model = selectedModel;
+	}
+
+	return model;
+}
+
 export async function activate(context: vscode.ExtensionContext) {
 	const outputChannel = vscode.window.createOutputChannel("AI Commit");
 	const generateCommitMessageCommand = vscode.commands.registerCommand(
@@ -28,38 +92,10 @@ export async function activate(context: vscode.ExtensionContext) {
 				const secrets: vscode.SecretStorage = context.secrets;
 				const config = vscode.workspace.getConfiguration("aicommit");
 				const amount = config.get<number>("amount");
-				let model = config.get<string>("model");
-				let provider = config.get<Config["provider"]>("provider");
+				const { provider, providerName } = await selectProvider(config);
 				const maxTokens = config.get<number>("maxTokens");
 				let endpoint = config.get<string>("endpoint");
 
-				// Find provider name based on matching key
-				let providerName = PROVIDERS[provider as keyof typeof PROVIDERS];
-
-				if (!provider) {
-					const selectedProvider = (await vscode.window.showQuickPick(
-						Object.values(PROVIDERS),
-						{
-							placeHolder: "Select a provider",
-						},
-					)) as Config["provider"];
-					if (!selectedProvider) {
-						throw new Error("Provider is required.");
-					}
-					const selectedProviderKey = Object.entries(PROVIDERS).find(
-						([_, value]) => value === selectedProvider,
-					)?.[0] as Config["provider"] | undefined;
-					if (!selectedProviderKey) {
-						throw new Error("The selected provider is not supported.");
-					}
-					config.update(
-						"provider",
-						selectedProviderKey,
-						vscode.ConfigurationTarget.Global,
-					);
-					provider = selectedProviderKey;
-					providerName = selectedProvider;
-				}
 				if (provider === "openai-compatible" && !endpoint) {
 					const selectedEndpoint = await vscode.window.showInputBox({
 						title: "Enter the endpoint to use",
@@ -91,33 +127,8 @@ export async function activate(context: vscode.ExtensionContext) {
 					await secrets.store("api-key", apiKey);
 				}
 
-				if (!model) {
-					const selectedModel = await vscode.window.showInputBox({
-						title: "Enter the model to use",
-						placeHolder: "e.g. gpt-4, claude-3-5-sonnet, etc.",
-					});
-					if (!selectedModel) {
-						throw new Error("Model is required.");
-					}
-					model = selectedModel;
-					config.update(
-						"model",
-						selectedModel,
-						vscode.ConfigurationTarget.Global,
-					);
-				}
+				const model = await selectModel(config);
 
-				if (!provider) {
-					throw new Error(
-						"Provider is not set. Please configure it in the settings.",
-					);
-				}
-
-				if (!model) {
-					throw new Error(
-						"Model is not set. Please configure it in the settings.",
-					);
-				}
 				// Get the git extension
 				const gitExtension =
 					vscode.extensions.getExtension<GitExtension>("vscode.git")?.exports;
@@ -231,17 +242,11 @@ export async function activate(context: vscode.ExtensionContext) {
 	);
 
 	const testApiKey = async () => {
-		const config = vscode.workspace.getConfiguration("ai-commit");
-		const provider = config.get<Config["provider"]>("provider");
-		const model = config.get<string>("model");
+		const config = vscode.workspace.getConfiguration("aicommit");
+		const { provider, providerName } = await selectProvider(config);
+		const model = await selectModel(config);
 		const endpoint = config.get<string>("endpoint");
 		try {
-			if (!provider) {
-				throw new Error(
-					"Provider is not set. Please configure it in the settings.",
-				);
-			}
-
 			let apiKey = await context.secrets.get("api-key");
 			if (!apiKey) {
 				apiKey = config.get<string>("apiKey");
@@ -255,7 +260,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			const client = createClient(provider, apiKey, endpoint);
 
 			// Test the API by generating a simple commit message
-			const testMessages = await generateCommitMessages(
+			await generateCommitMessages(
 				client,
 				provider,
 				model || "gpt-4",
@@ -263,17 +268,12 @@ export async function activate(context: vscode.ExtensionContext) {
 				1,
 				"",
 			);
-
-			if (testMessages && testMessages.length > 0) {
-				vscode.window.showInformationMessage(
-					"API key is valid and working correctly.",
-				);
-			} else {
-				throw new Error("Failed to generate a test commit message.");
-			}
+			vscode.window.showInformationMessage(
+				"API key is valid and working correctly.",
+			);
 		} catch (error) {
 			vscode.window.showErrorMessage(
-				`API key test failed for provider ${provider} and model ${model}: ${
+				`API key test failed for provider ${providerName} and model ${model}: ${
 					error instanceof Error ? error.message : String(error)
 				}`,
 			);

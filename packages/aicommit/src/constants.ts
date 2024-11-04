@@ -24,10 +24,11 @@ Follow the Conventional Commits specification:
 [optional footer(s)]
 
 **Important Instructions:**
-1. Focus on selecting ONE or TWO most appropriate <type>s from the list below that best represent the changes in the diff.
-2. Ensure the commit message(s) directly relate to the specific changes shown in the diff.
-3. Include a scope if it's clear from the diff which part of the codebase is affected.
-4. Provide a concise description (aim for 50 characters or less) that accurately reflects the changes.
+1. Every commit message should encapsulate ALL changes across ALL files in the diff.
+2. Focus on selecting ONE or TWO most appropriate <type>s from the list below that best represent the changes in the diff.
+3. Ensure the commit message(s) directly relate to the specific changes shown in the diff.
+4. Include a scope if it's clear from the diff which part of the codebase is affected.
+5. Provide a concise description (aim for 50 characters or less) that accurately reflects the changes.
 
 Where <type> is one of:
 - feat: A new feature
@@ -48,6 +49,7 @@ Where <type> is one of:
 4. If addressing an issue, reference it in the footer: "Closes #123".
 
 **Key Points:**
+1. The diff may include the git diff for multiple files. Encapsulate ALL changes across ALL files in the diff when creating commit messages.
 1. Analyze the diff carefully and focus ONLY on the changes present.
 2. Choose the most appropriate type(s) that accurately represent the changes.
 3. Include a scope if it's clear which part of the codebase is affected.

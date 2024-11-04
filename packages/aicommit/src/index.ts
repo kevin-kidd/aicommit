@@ -210,5 +210,6 @@ CLI.parse(process.argv);
 
 export { CLI };
 export { createClient, generateCommitMessages };
+export { getDiff };
 export type { Config };
 export { PROVIDERS };

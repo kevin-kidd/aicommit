@@ -58,7 +58,7 @@ aic integrate
 - `--api-key`: API key for the selected provider
 - `--endpoint`: Endpoint for OpenAI compatible providers
 - `--tokens`: Maximum number of tokens to generate
-- `--integration`: Integration to use (lazygit / vscode)
+- `--integration`: Integration to use (lazygit / vscode / none)
 
 ## Integrations
 

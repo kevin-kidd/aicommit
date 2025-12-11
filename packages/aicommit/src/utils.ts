@@ -3,7 +3,14 @@ import Groq from "groq-sdk";
 import OpenAI from "openai";
 import simpleGit from "simple-git";
 import * as v from "valibot";
-import { COMMIT_MESSAGE_SCHEMA, PROMPT, SYSTEM_PROMPT } from "./constants";
+import { existsSync, readFileSync } from "node:fs";
+import path from "node:path";
+import {
+	BASE_PROMPT,
+	COMMIT_MESSAGE_SCHEMA,
+	CONVENTIONAL_COMMITS_PROMPT,
+	SYSTEM_PROMPT,
+} from "./constants";
 import type { AIClient, Config } from "./types";
 
 // Create client based on config AI provider
@@ -36,11 +43,39 @@ export async function generateCommitMessages(
 	maxTokens: Config["maxTokens"],
 	amount: number,
 	diff: string,
+	guidelines?: string,
+	recentCommits?: string,
 ): Promise<string[]> {
-	const prompt = PROMPT.replaceAll("{{amount}}", amount.toString()).replaceAll(
+	let prompt = BASE_PROMPT.replaceAll("{{amount}}", amount.toString()).replaceAll(
 		"{{diff}}",
 		diff,
 	);
+
+	if (guidelines) {
+		// Use CONTRIBUTING.md as the commit message guide
+		prompt += `
+**Commit Message Guidelines:**
+Follow these guidelines from CONTRIBUTING.md:
+\`\`\`
+${guidelines}
+\`\`\`
+
+Respond with a JSON object containing an array of commit messages:
+{
+  "commitMessages": ["...", "..."]
+}`;
+	} else {
+		// Fall back to Conventional Commits
+		prompt += CONVENTIONAL_COMMITS_PROMPT;
+	}
+
+	if (recentCommits) {
+		prompt += `\n\n**Recent Commits (for style reference):**
+\`\`\`
+${recentCommits}
+\`\`\``;
+	}
+
 	let commitMessages: string | null | undefined;
 	const messages = [
 		{ role: "system", content: SYSTEM_PROMPT },
@@ -119,15 +154,28 @@ export async function getDiff(): Promise<string> {
 	return diff;
 }
 
-// Get recent commit messages
-// export async function getRecentCommits() {
-// 	const currentDirectory = (await $`pwd`.text()).trim();
-// 	const git = simpleGit(currentDirectory);
-// 	const recentCommits = await git.log({
-// 		format: "%h %s",
-// 		maxCount: 10,
-// 	});
-// 	return recentCommits.all
-// 		.map((commit) => (commit as unknown as DefaultLogFields).message)
-// 		.join("\n");
-// }
+// Get CONTRIBUTING.md content from repo root or .github/
+export function getContributingGuidelines(): string {
+	const cwd = process.cwd();
+	const paths = [
+		path.join(cwd, "CONTRIBUTING.md"),
+		path.join(cwd, ".github", "CONTRIBUTING.md"),
+	];
+	for (const p of paths) {
+		if (existsSync(p)) {
+			return readFileSync(p, "utf-8");
+		}
+	}
+	return "";
+}
+
+// Get recent commit messages for style reference
+export async function getRecentCommits(): Promise<string> {
+	const git = simpleGit(process.cwd());
+	try {
+		const log = await git.log({ maxCount: 10 });
+		return log.all.map((c) => c.message.split("\n")[0]).join("\n");
+	} catch {
+		return "";
+	}
+}

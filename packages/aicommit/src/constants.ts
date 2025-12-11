@@ -7,13 +7,22 @@ You will only respond with JSON in the following format: { "commitMessages": [] 
 Ensure you respond with valid JSON.
 `;
 
-export const PROMPT = `
+export const BASE_PROMPT = `
 Please suggest {{amount}} commit message(s) for the following git diff:
 
 \`\`\`diff
 {{diff}}
 \`\`\`
 
+**Basic Guidelines:**
+1. Use imperative mood: "Add feature" not "Added feature" or "Adds feature".
+2. Don't capitalize the first letter or end with a period.
+3. Provide a concise description (aim for 50 characters or less).
+4. The diff may include multiple files. Encapsulate ALL changes in each commit message.
+5. Analyze the diff carefully and focus ONLY on the changes present.
+`;
+
+export const CONVENTIONAL_COMMITS_PROMPT = `
 **Commit Message Format:**
 Follow the Conventional Commits specification:
 
@@ -23,12 +32,11 @@ Follow the Conventional Commits specification:
 
 [optional footer(s)]
 
-**Important Instructions:**
+**Instructions:**
 1. Every commit message should encapsulate ALL changes across ALL files in the diff.
 2. Focus on selecting ONE or TWO most appropriate <type>s from the list below that best represent the changes in the diff.
 3. Ensure the commit message(s) directly relate to the specific changes shown in the diff.
 4. Include a scope if it's clear from the diff which part of the codebase is affected.
-5. Provide a concise description (aim for 50 characters or less) that accurately reflects the changes.
 
 Where <type> is one of:
 - feat: A new feature
@@ -42,22 +50,10 @@ Where <type> is one of:
 - ci: Changes to our CI configuration files and scripts
 - chore: Other changes that don't modify src or test files
 
-**Guidelines:**
-1. Use imperative mood: "Add feature" not "Added feature" or "Adds feature".
-2. Don't capitalize the first letter or end with a period.
-3. For breaking changes, add "BREAKING CHANGE:" in the footer.
-4. If addressing an issue, reference it in the footer: "Closes #123".
-
-**Key Points:**
-1. The diff may include the git diff for multiple files. Encapsulate ALL changes across ALL files in the diff when creating commit messages.
-1. Analyze the diff carefully and focus ONLY on the changes present.
-2. Choose the most appropriate type(s) that accurately represent the changes.
-3. Include a scope if it's clear which part of the codebase is affected.
-4. Ensure the description directly relates to the changes in the diff.
-5. Avoid suggesting commits for changes not present in the diff.
-6. If only one type is applicable, suggest variations of that type with different descriptions.
-
-Remember, these commit messages should be helpful for someone reviewing the project's history and should accurately represent the changes in the diff.
+**Additional Guidelines:**
+1. For breaking changes, add "BREAKING CHANGE:" in the footer.
+2. If addressing an issue, reference it in the footer: "Closes #123".
+3. If only one type is applicable, suggest variations of that type with different descriptions.
 
 Respond with a JSON object containing an array of commit messages:
 {
@@ -67,6 +63,9 @@ Respond with a JSON object containing an array of commit messages:
   ]
 }
 `;
+
+// Keep PROMPT for backwards compatibility
+export const PROMPT: string = BASE_PROMPT + CONVENTIONAL_COMMITS_PROMPT;
 
 export const PROVIDERS: Record<Config["provider"], string> = {
 	openai: "OpenAI",

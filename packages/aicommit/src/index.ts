@@ -7,7 +7,13 @@ import { PROVIDERS } from "./constants";
 import { setupLazyGitIntegration } from "./integrations/lazygit";
 import { setupVSCodeIntegration } from "./integrations/vscode";
 import type { Config } from "./types";
-import { createClient, generateCommitMessages, getDiff } from "./utils";
+import {
+	createClient,
+	generateCommitMessages,
+	getContributingGuidelines,
+	getDiff,
+	getRecentCommits,
+} from "./utils";
 import { exec } from "node:child_process";
 import { confirm } from "@inquirer/prompts";
 
@@ -61,7 +67,11 @@ CLI.command("generate")
 				config.apiKey,
 				config.endpoint,
 			);
-			const diff = await getDiff();
+			const [diff, guidelines, recentCommits] = await Promise.all([
+				getDiff(),
+				Promise.resolve(getContributingGuidelines()),
+				getRecentCommits(),
+			]);
 			const commitMessages = await generateCommitMessages(
 				client,
 				config.provider,
@@ -69,6 +79,8 @@ CLI.command("generate")
 				config.maxTokens,
 				amount,
 				diff,
+				guidelines,
+				recentCommits,
 			);
 			if (commitMessages) {
 				// Log to console if LazyGit or VS Code is the chosen integration
@@ -210,6 +222,6 @@ CLI.parse(process.argv);
 
 export { CLI };
 export { createClient, generateCommitMessages };
-export { getDiff };
+export { getContributingGuidelines, getDiff, getRecentCommits };
 export type { Config };
 export { PROVIDERS };
